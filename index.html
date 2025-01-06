@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seu Aplicativo</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+</head>
+<body>
+    <!-- Cabeçalho com logo -->
+    <header>
+        <div class="logo-container">
+            <img src="lalaa.png" alt="Logo do Aplicativo" class="logo">
+        </div>
+    </header>
+
+    <!-- Novo botão moderno de adicionar posto -->
+    <div class="add-button-container">
+        <button id="addPrecoButton" class="modern-button">
+            <span class="button-text">Adicionar Posto</span>
+            <span class="button-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" stroke="currentColor" height="24" fill="none">
+                    <line y2="19" y1="5" x2="12" x1="12"></line>
+                    <line y2="12" y1="12" x2="19" x1="5"></line>
+                </svg>
+            </span>
+        </button>
+    </div>
+
+    <!-- Seção para exibir os postos -->
+    <div id="posto-melhor-preco">
+        <h2>Melhor Preço de Combustível</h2>
+        <p id="posto-info"></p>
+        <p id="endereco-info"></p>
+        <a id="google-maps-link" href="#" target="_blank">Ver no Google Maps</a>
+    </div>
+
+    <script src="script.js"></script>
+    
+</body>
+</html>
+
+<style>
+/* Reset básico e configuração de fonte */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #4e4e92, #6a72c8); /* Gradiente suave e moderno com tons de azul */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    min-height: 100vh;
+    color: #fff; /* Texto branco para contraste */
+}
+
+header {
+    width: 100%;
+    padding: 20px;
+    background-color: rgba(0, 0, 0, 0.7); /* Fundo semi-transparente */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+.logo-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.logo {
+    max-width: 200px;
+    height: auto;
+}
+
+#posto-melhor-preco {
+    margin-top: 30px;
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.9); /* Fundo claro com transparência */
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 90%;
+    max-width: 600px;
+    text-align: center;
+    color: #333; /* Texto escuro para maior contraste */
+}
+
+#posto-melhor-preco h2 {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+}
+
+#posto-info, #endereco-info {
+    margin-bottom: 10px;
+    font-size: 1rem;
+}
+
+#google-maps-link {
+    color: #4e4e92;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+#google-maps-link:hover {
+    text-decoration: underline;
+}
+
+/* Estilo do botão moderno */
+.add-button-container {
+    margin-top: 30px;
+}
+
+.modern-button {
+    position: relative;
+    width: 220px;
+    height: 60px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #4e4e92;
+    border: 2px solid #4e4e92;
+    border-radius: 30px;
+    padding: 0 20px;
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.modern-button .button-text {
+    color: #fff;
+    font-weight: 600;
+    font-size: 16px;
+    z-index: 1;
+}
+
+.modern-button .button-icon {
+    position: absolute;
+    right: -50px;
+    transition: all 0.3s ease;
+    height: 24px;
+    width: 24px;
+    fill: #fff;
+    z-index: 1;
+}
+
+.modern-button:hover {
+    background-color: #6a72c8;
+    border-color: #6a72c8;
+    box-shadow: 0 0 10px rgba(106, 114, 200, 0.5);
+}
+
+.modern-button:hover .button-icon {
+    right: 10px; /* Move a seta para dentro ao passar o mouse */
+}
+
+.modern-button:active {
+    background-color: #4e4e92;
+    transform: scale(0.98);
+}
+
+/* Efeito de transição suave ao passar o mouse */
+.modern-button:focus {
+    outline: none;
+    box-shadow: 0 0 10px rgba(106, 114, 200, 0.8);
+}
+</style>
+
+<script>
+// Dados dos postos
+const postos = [
+    {
+        nome: "Posto A",
+        endereco: "Rua X, 123",
+        precoGasolina: "4.49",
+        precoEtanol: "3.89",
+        googleMapsLink: "https://goo.gl/maps/J9cdX8Wm47s"
+    },
+    {
+        nome: "Posto B",
+        endereco: "Av. Y, 456",
+        precoGasolina: "4.59",
+        precoEtanol: "3.95",
+        googleMapsLink: "https://goo.gl/maps/8Dt4g5u5NRJvdeS58"
+    }
+];
+
+// Exibe os postos ordenados
+function exibirPostosOrdenados() {
+    const postoInfo = document.getElementById("posto-info");
+    const enderecoInfo = document.getElementById("endereco-info");
+    const googleMapsLink = document.getElementById("google-maps-link");
+
+    // Ordena os postos por preço de gasolina
+    const postosOrdenados = postos.sort((a, b) => parseFloat(a.precoGasolina) - parseFloat(b.precoGasolina));
+
+    if (postosOrdenados.length > 0) {
+        const posto = postosOrdenados[0]; // Posto com o menor preço de gasolina
+        postoInfo.textContent = `${posto.nome} - Gasolina: ${formatarMoeda(posto.precoGasolina)} | Etanol: ${formatarMoeda(posto.precoEtanol)}`;
+        enderecoInfo.textContent = `Endereço: ${posto.endereco}`;
+        googleMapsLink.href = posto.googleMapsLink;
+    } else {
+        postoInfo.textContent = "Nenhum posto cadastrado ainda.";
+        enderecoInfo.textContent = "";
+        googleMapsLink.href = "#";
+    }
+}
+
+// Função para formatar valores de moeda
+function formatarMoeda(valor) {
+    return new Intl.NumberFormat('pt-BR', {
+        style: 'currency',
+        currency: 'BRL',
+    }).format(parseFloat(valor));
+}
+
+// Exibe postos ao carregar a página
+window.onload = exibirPostosOrdenados;
+
+// Adiciona evento para abrir o modal de adicionar posto
+document.getElementById('addPrecoButton').addEventListener('click', () => {
+    Swal.fire({
+        title: 'Adicionar Novo Posto',
+        html: `
+            <div>
+                <label for="nome" class="block">Nome do Posto</label>
+                <input type="text" id="nome" class="swal2-input" required>
+                <label for="endereco" class="block">Endereço</label>
+                <input type="text" id="endereco" class="swal2-input" required>
+                <label for="gasolina" class="block">Preço da Gasolina (R$)</label>
+                <input type="text" id="gasolina" class="swal2-input" required>
+                <label for="etanol" class="block">Preço do Etanol (R$)</label>
+                <input type="text" id="etanol" class="swal2-input" required>
+                <label for="googleMapsLink" class="block">Link do Google Maps</label>
+                <input type="url" id="googleMapsLink" class="swal2-input" required>
+            </div>
+        `,
+        focusConfirm: false,
+        showCancelButton: true,
+        confirmButtonText: 'Salvar',
+        cancelButtonText: 'Cancelar',
+        preConfirm: () => {
+            const nome = document.getElementById('nome').value;
+            const endereco = document.getElementById('endereco').value;
+            let gasolina = document.getElementById('gasolina').value.replace(',', '.');
+            let etanol = document.getElementById('etanol').value.replace(',', '.');
+            const googleMapsLink = document.getElementById('googleMapsLink').value;
+
+            if (!nome || !endereco || !gasolina || !etanol || !googleMapsLink) {
+                Swal.showValidationMessage('Por favor, preencha todos os campos!');
+                return false;
+            }
+
+            // Adiciona novo posto
+            postos.push({
+                nome,
+                endereco,
+                precoGasolina: gasolina,
+                precoEtanol: etanol,
+                googleMapsLink
+            });
+
+            // Exibe os postos atualizados
+            exibirPostosOrdenados();
+
+            // Mostra o alerta com o nome do posto
+            Swal.fire('Posto Adicionado!', `Nome: ${nome}`, 'success');
+        }
+    });
+});
+</script>
