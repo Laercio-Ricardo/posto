@@ -6,6 +6,25 @@
     <title>Seu Aplicativo</title>
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <!-- Adicionando a autenticação do Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.9.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.9.0/firebase-firestore.js"></script>
+    <script>
+        // Configuração do Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyCJdDXjXZwKPQfeRFYHpQJMXqIh8l2m6XU",
+            authDomain: "posto-f6c87.firebaseapp.com",
+            projectId: "posto-f6c87",
+            storageBucket: "posto-f6c87.firebasestorage.app",
+            messagingSenderId: "127294306778",
+            appId: "1:127294306778:web:b3e945b4a52615a8eee8e3",
+            measurementId: "G-3Z42M21HLL"
+        };
+
+        // Inicializa o Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore(app);
+    </script>
 </head>
 <body>
     <!-- Cabeçalho com logo -->
@@ -37,7 +56,6 @@
     </div>
 
     <script src="script.js"></script>
-    
 </body>
 </html>
 
